@@ -110,7 +110,17 @@ class IndicationController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    const indication = await Indication.findByOrFail('id', params.id)
+    try {
+      await indication.delete()
+      return response.json({
+        message: 'Indicacao removida com sucesso.'
+      })
+    } catch (e) {
+      return response.badRequest('Ocorreu um erro ao deletar a indicacao.')
+    }
   }
 }
 
 module.exports = IndicationController
+
