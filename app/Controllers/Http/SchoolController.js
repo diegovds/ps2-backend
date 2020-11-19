@@ -26,11 +26,9 @@ class SchoolController {
       const schools = await School.all()
 
       return Promise.all(schools.rows.map(async school => {
-        const phone = await Phone.findBy('school_id', school.$attributes.id)
         
         return {
-          school: { ...school.$attributes },
-          phone: { ...phone.$attributes }
+          school: { ...school.$attributes }
         }
       }))
     } catch (e) {
