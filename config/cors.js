@@ -16,7 +16,7 @@ module.exports = {
   | Function - Receives the current origin and should return one of the above values.
   |
   */
-  origin: false,
+  origin: ['https://schoolsm.vercel.app', 'http://localhost:3000'],
 
   /*
   |--------------------------------------------------------------------------
