@@ -23,14 +23,11 @@ class SchoolController {
    */
   async index ({ request, response, view }) {
     try {
-      const schools = await School.all()
-
-      return Promise.all(schools.rows.map(async school => {
-        
-        return {
-          school: { ...school.$attributes }
-        }
-      }))
+      //const schools = await School.all()
+      const schools = await Database
+        .select('id','socialReason','latitudeSchool','longitudeSchool')
+        .from('schools');
+      return response.json(schools)
     } catch (e) {
       return response.badRequest('Ocorreu um erro inesperado.')
     }
@@ -44,7 +41,7 @@ class SchoolController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {    
+  async store ({ request, response }) {
     const schoolData = request.only(["socialReason", "latitudeSchool", "longitudeSchool", "emailSchool", "addressSchool"])
     const phoneData = request.only(['numberPhone'])
 
@@ -57,9 +54,9 @@ class SchoolController {
 
       return response.json({
         success: true,
-        data: { 
-          school: { 
-            ...school.$attributes 
+        data: {
+          school: {
+            ...school.$attributes
           },
           phone: {
             ...phone.$attributes
@@ -82,17 +79,32 @@ class SchoolController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    const school = await School.findByOrFail('id', params.id)
-    const phone = await Phone.findByOrFail('school_id', school.id)
+    const { id } = request.params;
+    const school = await Database
+      .select('id','socialReason','latitudeSchool',
+              'longitudeSchool','emailSchool', 'addressSchool')
+      .from('schools')
+      .where('id','=',id)
+
+    const phone = await Database
+      .select('numberPhone')
+      .from('phones')
+      .where('school_id','=',id)
+
+    // const school = await School.findByOrFail('id', params.id)
+    // const phone = await Phone.findByOrFail('school_id', school.id)
 
     return response.json({
-      school: {
-        ...school.$attributes
-      },
-      phone: {
-        ...phone.$attributes
-      }
+      id: school[0].id,
+      socialReason: school[0].socialReason,
+      latitudeSchool: school[0].latitudeSchool,
+      longitudeSchool: school[0].longitudeSchool,
+      emailSchool: school[0].emailSchool,
+      addressSchool: school[0].addressSchool,
+      numberPhone: phone[0].numberPhone
     })
+      // ...school.$attributes,
+      // phone
   }
 
   /**
@@ -110,7 +122,7 @@ class SchoolController {
     const phoneData = request.only(['numberPhone'])
 
     const trx = await Database.beginTransaction()
-    
+
     try {
       school.merge(schoolData)
       await school.save(trx)
