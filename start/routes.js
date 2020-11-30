@@ -23,3 +23,4 @@ Route.get('/', () => {
 Route.resource("schools", "SchoolController").apiOnly();
 Route.resource("indications", "IndicationController").apiOnly();
 Route.resource("v_indications", "VIndicationController").apiOnly();
+Route.resource("user_apps", "UserAppController").apiOnly();

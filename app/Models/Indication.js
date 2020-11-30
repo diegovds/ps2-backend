@@ -7,6 +7,9 @@ class Indication extends Model {
     school () {
         return this.belongsTo('App/Models/School')
     }
+    userapp () {
+        return this.hasOne('App/Models/UserApp')
+    }
 }
 
 module.exports = Indication
