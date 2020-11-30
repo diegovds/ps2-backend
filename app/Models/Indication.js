@@ -8,8 +8,9 @@ class Indication extends Model {
         return this.belongsTo('App/Models/School')
     }
     userapp () {
-        return this.hasOne('App/Models/UserApp')
+        return this.belongsTo('App/Models/UserApp')
     }
 }
 
 module.exports = Indication
+
