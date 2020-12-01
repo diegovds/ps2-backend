@@ -44,7 +44,7 @@ class IndicationController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const indicationData = request.only(['school_id', 'user_app_id'])
+    const indicationData = request.only(['school_id', 'user_app_id', 'period'])
 
     const trx = await Database.beginTransaction()
     try {
