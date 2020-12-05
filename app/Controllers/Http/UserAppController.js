@@ -72,8 +72,13 @@ class UserAppController {
    */
   async show ({ params, request, response, view }) {
     try {
-      const user = await UserApp.findByOrFail('id', params.id)
+      const uid = await UserApp.findByOrFail('uid', params.id)
 
+      const user = await Database
+        .select('id')
+        .from('user_apps')
+        .where('uid', uid.uid)
+        
       return response.json(user)
     } catch (e) {
       return response.badRequest('Ocorreu um erro ao listar o user.')
