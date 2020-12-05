@@ -39,7 +39,7 @@ class UserAppController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const userData = request.only(['socialId', 'urlPhoto', 'username'])
+    const userData = request.only(['urlPhoto', 'username', 'uid'])
 
     const trx = await Database.beginTransaction()
     try {
