@@ -27,9 +27,7 @@ class IndicationController {
               from indications \
               group by (school_id)'
       )
-
       return response.json(indications) 
-
     } catch (error) {
       return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
     }
@@ -95,9 +93,7 @@ class IndicationController {
               where (period =' + params.period + 'AND school_id =' + params.school_id + ' ) \
               group by (school_id)'
       )
-
       return response.json(indication) 
-      
     } catch (error) {
       return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
     }
