@@ -17,9 +17,17 @@
 const Route = use('Route')
 
 Route.get('/', () => {
-  return { greeting: 'Hello world in JSON' }
+  return { 
+    title: 'Sistema de indicação escolares [API Rest]',
+    description: 'API Rest desenvolvida para o projeto final da disciplina de Projeto de Software 2' 
+  }
 })
 
 Route.resource("schools", "SchoolController").apiOnly();
-Route.resource("indications", "IndicationController").apiOnly();
+
+Route.get('/indications', 'IndicationController.index')
+Route.post('/indications', 'IndicationController.store')
+Route.delete('/indications/:id', 'IndicationController.destroy')
+Route.get('/indications/:school_id/:period', 'IndicationController.show')
+
 Route.resource("user_apps", "UserAppController").apiOnly();

@@ -21,6 +21,18 @@ class IndicationController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    try {
+      const indications = await Database
+        .raw('select school_id, count(*) as indications \
+              from indications \
+              group by (school_id)'
+      )
+
+      return response.json(indications) 
+
+    } catch (error) {
+      return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
+    }
   }
 
   /**
@@ -76,6 +88,19 @@ class IndicationController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    try {
+      const indication = await Database
+        .raw('select school_id, count(*) as indications \
+              from indications \
+              where (period =' + params.period + 'AND school_id =' + params.school_id + ' ) \
+              group by (school_id)'
+      )
+
+      return response.json(indication) 
+      
+    } catch (error) {
+      return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
+    }
   }
 
   /**
