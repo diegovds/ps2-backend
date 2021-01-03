@@ -75,7 +75,7 @@ class UserAppController {
       const uid = await UserApp.findByOrFail('uid', params.id)
 
       const user = await Database
-        .select('id')
+        .select('uid')
         .from('user_apps')
         .where('uid', uid.uid)
         
