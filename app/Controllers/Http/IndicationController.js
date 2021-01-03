@@ -54,7 +54,7 @@ class IndicationController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const indicationData = request.only(['school_id', 'user_app_id', 'period'])
+    const indicationData = request.only(['school_id', 'uid', 'period'])
 
     const trx = await Database.beginTransaction()
     try {
@@ -71,8 +71,8 @@ class IndicationController {
         },
         message: 'Indicacao criada com sucesso.'
       })
-    } catch(e) {
-      return response.badRequest('Ocorreu um erro ao registrar sua indicacao.')
+    } catch(error) {
+      return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
     }
   }
 

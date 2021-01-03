@@ -56,8 +56,8 @@ class UserAppController {
         },
         message: 'User criado com sucesso.'
       })
-    } catch(e) {
-      return response.badRequest('Ocorreu um erro ao registrar seu user.')
+    } catch(error) {
+      return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
     }
   }
 
