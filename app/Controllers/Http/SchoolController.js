@@ -27,6 +27,7 @@ class SchoolController {
       const schools = await Database
         .select('id','socialReason','latitudeSchool','longitudeSchool')
         .from('schools');
+      Database.close()
       return response.json(schools)
     } catch (e) {
       return response.badRequest('Ocorreu um erro inesperado.')
@@ -51,7 +52,7 @@ class SchoolController {
       const phone = await Phone.create({ ...phoneData, school_id: school.id }, trx)
 
       await trx.commit()
-
+      Database.close()
       return response.json({
         success: true,
         data: {
@@ -85,12 +86,13 @@ class SchoolController {
               'longitudeSchool','emailSchool', 'addressSchool')
       .from('schools')
       .where('id','=',id)
+    Database.close()
 
     const phone = await Database
       .select('numberPhone')
       .from('phones')
       .where('school_id','=',id)
-
+    Database.close()
     // const school = await School.findByOrFail('id', params.id)
     // const phone = await Phone.findByOrFail('school_id', school.id)
 
@@ -131,7 +133,7 @@ class SchoolController {
       await phone.save(trx)
 
       trx.commit()
-
+      Database.close()
       return response.json({
         ...school.$attributes,
         phone

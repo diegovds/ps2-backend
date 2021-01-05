@@ -27,6 +27,8 @@ class IndicationController {
               from indications \
               group by (school_id)'
       )
+      Database.close()
+
       return response.json(indications.rows) 
     } catch (error) {
       return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
@@ -61,6 +63,7 @@ class IndicationController {
       const indication = await Indication.create({ ...indicationData }, trx)
 
       await trx.commit()
+      Database.close()
 
       return response.json({
         success: true,
@@ -93,6 +96,8 @@ class IndicationController {
               where (period =' + params.period + 'AND school_id =' + params.school_id + ' ) \
               group by (school_id)'
       )
+
+      Database.close()
       return response.json(indication.rows) 
     } catch (error) {
       return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)

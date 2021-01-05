@@ -46,7 +46,7 @@ class UserAppController {
       const user = await UserApp.create({ ...userData }, trx)
 
       await trx.commit()
-
+      Database.close()
       return response.json({
         success: true,
         data: { 
@@ -78,7 +78,7 @@ class UserAppController {
         .select('uid')
         .from('user_apps')
         .where('uid', uid.uid)
-        
+      Database.close()
       return response.json(user)
     } catch (e) {
       return response.badRequest('Ocorreu um erro ao listar o user.')
