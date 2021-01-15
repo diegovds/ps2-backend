@@ -90,15 +90,49 @@ class IndicationController {
    */
   async show({ params, request, response, view }) {
     try {
-      const indication = await Database
-        .raw('select i.school_id, count(*) as indications, s."socialReason", s."latitudeSchool", s."longitudeSchool", s."emailSchool", s."addressSchool", p."numberPhone" \
-              from indications i join schools s on i.school_id = s.id join phones p on s.id = p.school_id \
-              where (i.period =' + params.period + 'AND i.school_id =' + params.school_id + ' ) \
-              group by (i.school_id, s.id, p.id)'
+      const school = await Database
+        .raw('select s.id, s."socialReason", s."latitudeSchool", s."longitudeSchool", s."emailSchool", s."addressSchool", p."numberPhone" \
+              from schools as s join phones as p on s.id = p.school_id \
+              where (s.id =' + params.school_id + ')'
         )
 
       Database.close()
-      return response.json(indication.rows)
+
+      const indication = await Database
+        .raw('select i.school_id, count(*) as indications \
+              from indications i \
+              where (i.period =' + params.period + 'AND i.school_id =' + params.school_id + ' ) \
+              group by (i.school_id)'
+        )
+
+      Database.close()
+
+      //return response.json(school.rows)
+
+      try {
+        return response.json({
+          id: school.rows[0].id,
+          socialReason: school.rows[0].socialReason,
+          latitudeSchool: school.rows[0].latitudeSchool,
+          longitudeSchool: school.rows[0].longitudeSchool,
+          emailSchool: school.rows[0].emailSchool,
+          addressSchool: school.rows[0].addressSchool,
+          numberPhone: school.rows[0].numberPhone,
+          school_id: indication.rows[0].school_id,
+          indications: indication.rows[0].indications
+        })
+      } catch (error) {
+        return response.json({
+          id: school.rows[0].id,
+          socialReason: school.rows[0].socialReason,
+          latitudeSchool: school.rows[0].latitudeSchool,
+          longitudeSchool: school.rows[0].longitudeSchool,
+          emailSchool: school.rows[0].emailSchool,
+          addressSchool: school.rows[0].addressSchool,
+          numberPhone: school.rows[0].numberPhone
+        })
+      }
+
     } catch (error) {
       return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
     }
