@@ -30,21 +30,21 @@ adonis migration:run
 #### Routes
 
 
-| Route        | Verb(s)   | Handler                  | Name            |
-|--------------|-----------|--------------------------|-----------------|
-| /                               | HEAD,GET  | Closure                                  | /                               |        |
-| /schools/:period/:period        | HEAD,GET  | SchoolController.index                   | /schools/:period/:period        |        |
-| /schools                        | POST      | SchoolController.store                   | /schools                        |        |
-| schools/:id                    | DELETE    | SchoolController.destroy                 | /schools/:id                    |        |
-| /schools/:id                    | HEAD,GET  | SchoolController.show                    | /schools/:id                    |        |
-| /schools/:id                    | PUT       | SchoolController.update                  | /schools/:id                    |        |
-| /indications                    | HEAD,GET  | IndicationController.index               | /indications                    |        |
-| /indications                    | POST      | IndicationController.store               | /indications                    |        |
-| /indications/:id                | DELETE    | IndicationController.destroy             | /indications/:id                |        |
-| /indications/:school_id/:period | HEAD,GET  | IndicationController.show                | /indications/:school_id/:period |        |
-| /user_apps                      | HEAD,GET  | UserAppController.index                  | user_apps.index                 |        |
-| /user_apps                      | POST      | UserAppController.store                  | user_apps.store                 |        |
-| /user_apps/:id                  | HEAD,GET  | UserAppController.show                   | user_apps.show                  |        |
-| /user_apps/:id                  | PUT,PATCH | UserAppController.update                 | user_apps.update                |        |
-| /user_apps/:id                  | DELETE    | UserAppController.destroy                | user_apps.destroy               |        |
+| Route        | Handler                  
+|--------------|--------------------------
+| /                                 | Closure                                  | 
+| /schools/:period/:period         | SchoolController.index                   | 
+| /schools                         | SchoolController.store                   | 
+| schools/:id                    | SchoolController.destroy                 | 
+| /schools/:id                   | SchoolController.show                    | 
+| /schools/:id                   | SchoolController.update                  | 
+| /indications                      | IndicationController.index               | 
+| /indications                       | IndicationController.store               | 
+| /indications/:id                    | IndicationController.destroy             | 
+| /indications/:school_id/:period   | IndicationController.show                | 
+| /user_apps                        | UserAppController.index                  | 
+| /user_apps                            | UserAppController.store                  | 
+| /user_apps/:id                    | UserAppController.show                   | 
+| /user_apps/:id                   | UserAppController.update                 | 
+| /user_apps/:id                      | UserAppController.destroy                | 
 
