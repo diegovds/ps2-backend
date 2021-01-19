@@ -23,7 +23,11 @@ Route.get('/', () => {
   }
 })
 
-Route.resource("schools", "SchoolController").apiOnly();
+Route.get('/schools/:period/:period', 'SchoolController.index')
+Route.post('/schools', 'SchoolController.store')
+Route.delete('/schools/:id', 'SchoolController.destroy')
+Route.get('/schools/:id', 'SchoolController.show')
+Route.put('/schools/:id', 'SchoolController.update')
 
 Route.get('/indications', 'IndicationController.index')
 Route.post('/indications', 'IndicationController.store')

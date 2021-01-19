@@ -25,7 +25,8 @@ class IndicationController {
       const indications = await Database
         .raw('select school_id, count(*) as indications \
               from indications \
-              group by (school_id)'
+              group by (school_id) \
+              order by (indications) desc'
         )
       Database.close()
 

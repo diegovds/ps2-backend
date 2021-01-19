@@ -21,16 +21,22 @@ class SchoolController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index({ params, request, response, view }) {
     try {
-      //const schools = await School.all()
       const schools = await Database
-        .select('id','socialReason','latitudeSchool','longitudeSchool')
-        .from('schools');
+        .raw('select s.id, s."socialReason", s."latitudeSchool", s."longitudeSchool", tab.indications \
+              from schools as s left outer join ( select i.school_id, count(*) as indications \
+                                                  from indications as i \
+                                                  where (i.period = ' + params.period + ') \
+                                                  group by (i.school_id)) AS tab \
+              on s.id = tab.school_id \
+              order by (tab.indications) desc nulls last'
+        )
       Database.close()
-      return response.json(schools)
-    } catch (e) {
-      return response.badRequest('Ocorreu um erro inesperado.')
+
+      return response.json(schools.rows)
+    } catch (error) {
+      return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
     }
   }
 
@@ -42,7 +48,7 @@ class SchoolController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store({ request, response }) {
     const schoolData = request.only(["socialReason", "latitudeSchool", "longitudeSchool", "emailSchool", "addressSchool"])
     const phoneData = request.only(['numberPhone'])
 
@@ -65,7 +71,7 @@ class SchoolController {
         },
         message: 'Cadastro criado com sucesso.'
       })
-    } catch(e) {
+    } catch (e) {
       return response.badRequest('Ocorreu um erro ao registrar sua conta.')
     }
   }
@@ -79,34 +85,28 @@ class SchoolController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
-    const { id } = request.params;
-    const school = await Database
-      .select('id','socialReason','latitudeSchool',
-              'longitudeSchool','emailSchool', 'addressSchool')
-      .from('schools')
-      .where('id','=',id)
-    Database.close()
+  async show({ params, request, response, view }) {
+    try {
+      const school = await Database
+        .raw('select s.id, s."socialReason", s."latitudeSchool", s."longitudeSchool", s."emailSchool", s."addressSchool", p."numberPhone" \
+              from schools as s join phones as p on s.id = p.school_id \
+              where (s.id =' + params.id + ')'
+        )
+      Database.close()
 
-    const phone = await Database
-      .select('numberPhone')
-      .from('phones')
-      .where('school_id','=',id)
-    Database.close()
-    // const school = await School.findByOrFail('id', params.id)
-    // const phone = await Phone.findByOrFail('school_id', school.id)
+      return response.json({
+        id: school.rows[0].id,
+        socialReason: school.rows[0].socialReason,
+        latitudeSchool: school.rows[0].latitudeSchool,
+        longitudeSchool: school.rows[0].longitudeSchool,
+        emailSchool: school.rows[0].emailSchool,
+        addressSchool: school.rows[0].addressSchool,
+        numberPhone: school.rows[0].numberPhone
+      })
+    } catch (error) {
+      return response.badRequest(`Erro: ${error.name}\nMensagem: ${error.message}`)
+    }
 
-    return response.json({
-      id: school[0].id,
-      socialReason: school[0].socialReason,
-      latitudeSchool: school[0].latitudeSchool,
-      longitudeSchool: school[0].longitudeSchool,
-      emailSchool: school[0].emailSchool,
-      addressSchool: school[0].addressSchool,
-      numberPhone: phone[0].numberPhone
-    })
-      // ...school.$attributes,
-      // phone
   }
 
   /**
@@ -117,7 +117,7 @@ class SchoolController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update({ params, request, response }) {
     const school = await School.findByOrFail('id', params.id)
     const schoolData = request.only(["socialReason", "latitudeSchool", "longitudeSchool", "emailSchool", "addressSchool"])
     const phone = await Phone.findByOrFail('school_id', school.id)
@@ -138,7 +138,7 @@ class SchoolController {
         ...school.$attributes,
         phone
       })
-    } catch(e) {
+    } catch (e) {
       return response.badRequest('Aconteceu um erro ao atualizar os dados.')
     }
   }
@@ -151,7 +151,7 @@ class SchoolController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy({ params, request, response }) {
     const school = await School.findByOrFail('id', params.id)
     try {
       await school.delete()
